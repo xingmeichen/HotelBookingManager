@@ -57,10 +57,10 @@ public enum HotelBookingManager {
             throw new RuntimeException("Invalid room number");
         }
         synchronized (this) {
-            while (roomCount < roomNumber) {
+            if (roomCount < roomNumber) {
                 throw new RuntimeException("Invalid room number");
             }
-            while (!isAvailable(roomNumber, date)) {
+            if (!isAvailable(roomNumber, date)) {
                 throw new RuntimeException("The room is not available");
             }
             String dateStr = Utils.format(date);
