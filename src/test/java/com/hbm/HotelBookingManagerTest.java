@@ -80,6 +80,9 @@ public class HotelBookingManagerTest {
         runtimeException = Assertions.assertThrows(RuntimeException.class, () -> hotelBookingManager.bookRoom("Guest1", -1, new Date()));
         Assertions.assertEquals("Invalid room number", runtimeException.getMessage());
 
+        runtimeException = Assertions.assertThrows(RuntimeException.class, () -> hotelBookingManager.bookRoom("Guest1", hotelBookingManager.roomCount + 1, new Date()));
+        Assertions.assertEquals("Invalid room number", runtimeException.getMessage());
+
         runtimeException = Assertions.assertThrows(RuntimeException.class, () -> hotelBookingManager.bookRoom("Guest1", Integer.MAX_VALUE + 1, new Date()));
         Assertions.assertEquals("Invalid room number", runtimeException.getMessage());
     }
