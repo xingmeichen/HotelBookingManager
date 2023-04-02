@@ -29,10 +29,10 @@ public enum HotelBookingManager {
      * @param count
      */
     public void configRoomCount(int count) {
-        while (count < 1 || count > Integer.MAX_VALUE) {
+        if (count < 1 || count > Integer.MAX_VALUE) {
             throw new RuntimeException("The number of room should be in [1, 2147483647]");
         }
-        synchronized (roomCount) {
+        synchronized (this) {
             roomCount = count;
         }
     }
@@ -44,23 +44,23 @@ public enum HotelBookingManager {
      * @param date
      */
     public void bookRoom(String guestName, int roomNumber, Date date) {
-        while (null == guestName || guestName.trim().isEmpty()) {
+        if (null == guestName || guestName.trim().isEmpty()) {
             throw new RuntimeException("Invalid guest name");
         }
-        while (null == date) {
+        if (null == date) {
             throw new RuntimeException("Invalid date");
         }
-        while (Utils.isBeforeDate(new Date(), date)) {
+        if (Utils.isBeforeDate(new Date(), date)) {
             throw new RuntimeException("Sorry, you are not able to book a room for past");
         }
-        while (roomNumber < 1) {
+        if (roomNumber < 1) {
             throw new RuntimeException("Invalid room number");
         }
-        synchronized (roomCount) {
-            if (roomCount < roomNumber) {
+        synchronized (this) {
+            while (roomCount < roomNumber) {
                 throw new RuntimeException("Invalid room number");
             }
-            if (!isAvailable(roomNumber, date)) {
+            while (!isAvailable(roomNumber, date)) {
                 throw new RuntimeException("The room is not available");
             }
             String dateStr = Utils.format(date);
@@ -80,10 +80,10 @@ public enum HotelBookingManager {
      * @return
      */
     public Set<Integer> listAvailableRoomsOnGivenDate(Date date) {
-        while (null == date) {
+        if (null == date) {
             throw new RuntimeException("Invalid date");
         }
-        synchronized (roomCount) {
+        synchronized (this) {
             Set<Integer> bookedRooms = mapBookedRoomByDate.getOrDefault(Utils.format(date), new HashSet<>());
             if (bookedRooms.isEmpty()) {
                 return initAvailableRooms();
